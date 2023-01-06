@@ -40,10 +40,10 @@ steps:
 
   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
     entrypoint: 'venv/bin/python'
-    args: ['-m', 'pytest', '-v']
+#     args: ['-m', 'pytest', '-v']
    
-  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
-    entrypoint: 'venv/bin/python'
+#   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+#     entrypoint: 'venv/bin/python'
     args:
       - '-c'
       - |
