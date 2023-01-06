@@ -42,8 +42,8 @@ steps:
 #     entrypoint: '/bin/bash'
 #     args: ['coverage','-m', 'pytest']
    
-#   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
-#     entrypoint: '/bin/bash'
+  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+    entrypoint: '/bin/bash'
     args:
       - '-c'
       - |
