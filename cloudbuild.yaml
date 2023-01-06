@@ -38,16 +38,18 @@ steps:
 
 # Installs any dependencies listed in the project's requirements.txt.
 
-  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
-    entrypoint: 'venv/bin/python'
-    args: ['coverage','-m', 'pytest']
+#   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+#     entrypoint: '/bin/bash'
+#     args: ['coverage','-m', 'pytest']
    
-# #   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
-# #     entrypoint: 'venv/bin/python'
-#     args:
-#       - '-c'
-#       - |
-#       - -m pytest --cov=my_module tests/
+#   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+#     entrypoint: '/bin/bash'
+    args:
+      - '-c'
+      - |
+      - -m pytest --cov=my_module tests/
+      - coverage run -m pytest
+      - coverage xml
  
 # runs pytest from the virtual environment (with all requirements)
 
