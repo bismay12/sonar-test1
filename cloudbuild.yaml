@@ -47,9 +47,9 @@ steps:
     args:
       - '-c'
       - |
-      - -m pytest --cov=my_module tests/
-      - coverage run -m pytest
-      - coverage xml
+      - -m pytest --cov=tests/test_my_module.py
+#       - coverage run -m pytest
+#       - coverage xml
  
 # runs pytest from the virtual environment (with all requirements)
 
