@@ -1,36 +1,89 @@
-#  Copyright 2019 Google LLC
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
+substitutions:
+  _COMPOSER_ENV_NAME: ci-cd-deploy
+  _COMPOSER_REGION: asia-south1
 
-# This cloudbuild.yaml file uses the custom cloud builder image called python-cloudbuild that can be built from
-# the python-cloud-builder/ directory to run python CI steps
-# In this example the file runs pytest and pylint.  User added steps can be incorporated as well.
-
+# # Access the id_github file from Secret Manager, and setup SSH
 steps:
-- name: 'gcr.io/$PROJECT_ID/python-cloudbuild' # Cloud Build automatically substitutes $PROJECT_ID for your Project ID
-  entrypoint: '/bin/bash'
-  args: ['-c','virtualenv /workspace/venv' ]
-  # Creates a Python virtualenv stored in /workspace/venv that will persist across container runs.
-- name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
-  entrypoint: 'venv/bin/pip'
-  args: ['install', '-V', '-r', 'requirements.txt']
-  # Installs any dependencies listed in the project's requirements.txt.
-- name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
-  entrypoint: 'venv/bin/python'
-  args: ['-m', 'pytest', '-v']
-  # runs pytest from the virtual environment (with all requirements)
-  # using the verbose flag so you can see each individual test.
-- name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
-  entrypoint: 'venv/bin/pylint'
-  args: ['my_module/']
-  #runs pylint against the module my_module contained one folder under the project root.
+#   - name: 'gcr.io/cloud-builders/git'
+#     secretEnv: ['SSH_KEY']
+#     entrypoint: 'bash'
+#     args:
+#       - '-c'
+#       - |
+#         echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+#         chmod 400 /root/.ssh/id_rsa
+#         ssh-keyscan -t rsa github.com > known_hosts.github
+#         cp known_hosts.github /root/.ssh/known_hosts
+#     volumes:
+#       - name: ssh
+#         path: /root/.ssh
+        
+# # Clone the repository
+#   - name: 'gcr.io/cloud-builders/git'
+#     args:
+#     - clone
+#     - git@github.com:bismay12/cicd-sonar.git
+#     volumes:
+#     - name: 'ssh'
+#       path: /root/.ssh
+  
+  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild' 
+    entrypoint: '/bin/bash'
+    args: ['-c','virtualenv /workspace/venv' ]
+
+# Creates a Python virtualenv stored in /workspace/venv that will persist across container runs.
+  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+    entrypoint: 'venv/bin/pip'
+    args: ['install', '-V', '-r', 'requirements.txt']
+
+# Installs any dependencies listed in the project's requirements.txt.
+
+  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+    entrypoint: 'venv/bin/python'
+    args: ['-m', 'pytest', '-v']
+# runs pytest from the virtual environment (with all requirements)
+
+# using the verbose flag so you can see each individual test.
+  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+    entrypoint: 'venv/bin/pylint'
+    args: ['my_module/']
+
+  # Static code Analysis
+  - name: 'gcr.io/$PROJECT_ID/sonar-scanner:latest'
+    args:
+    - '-Dsonar.host.url=http://35.200.250.32:9000 '
+    - '-Dsonar.login=sqp_64dbfde7eb298ca539c330564dbfdfa7da03992d'
+    - '-Dsonar.projectKey=sonar-test'
+    - '-Dsonar.sources=.'
+    - '-Dsonar.python.coverage.reportPaths=coverage.xml'
+
+#Add dags to Dags folder
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - '-c'
+      - |
+        for dagfile in $(ls dags)
+          do
+          gcloud composer environments storage dags import \
+          --environment $_COMPOSER_ENV_NAME \
+          --location $_COMPOSER_REGION \
+          --source dags/$$dagfile
+          done
+    entrypoint: bash
+
+# # Build the image
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['build', '-t', 'gcr.io/niveustraining/my-image:v1.0', '.']
+    
+# # Push the image to GCR
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['push', 'gcr.io/niveustraining/my-image:v1.0']
+
+# # vulnerabiliy scan
+#   - name: 'gcr.io/cloud-builders/gcloud'
+#     args: ['beta', 'container', 'images', 'describe', 'gcr.io/niveustraining/my-image:v1.0', '--format=json']
+
+# availableSecrets:
+#   secretManager:
+#     - versionName: projects/866354246469/secrets/SSH_KEY/versions/latest
+#       env: SSH_KEY
