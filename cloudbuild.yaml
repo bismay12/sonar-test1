@@ -40,7 +40,15 @@ steps:
 
   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
     entrypoint: 'venv/bin/python'
-    args: ['-m', 'pytest-cov', '-v']
+    args: ['-m', 'pytest', '-v']
+   
+  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+    entrypoint: 'venv/bin/python'
+    args:
+      - '-c'
+      - |
+      - -m pytest --cov=my_module tests/
+ 
 # runs pytest from the virtual environment (with all requirements)
 
 # # using the verbose flag so you can see each individual test.
