@@ -54,7 +54,7 @@ steps:
 #       - '-c'
 #       - |
 # #         python-coverage run tests/test_my_module.py
-# #         python3 -m pytest \
+#         python3 -m pytest \
 #         --cov=mymodule \
 #         --cov=tests \
 #         --cov-report xml:coverage.xml \
