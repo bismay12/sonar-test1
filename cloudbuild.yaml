@@ -49,7 +49,7 @@ steps:
     args:
       - '-c'
       - |
-        pipenv run pytest \
+        python3 -m pytest \
           --cov=mymodule \
           --cov=tests \
           --cov-report xml:coverage.xml \
