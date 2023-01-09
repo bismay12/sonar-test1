@@ -42,18 +42,18 @@ steps:
     entrypoint: 'venv/bin/python'
     args: ['-m', 'pytest' ,'-v']
 
-# runs pytest from the virtual environment (with all requirements)
+# # runs pytest from the virtual environment (with all requirements)
    
-  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
-    entrypoint: 'venv/bin/python'
-    args:
-      - '-c'
-      - |
-#         pipenv run pytest \
-          --cov=mymodule \
-          --cov=tests \
-          --cov-report xml:report-coverage.xml \
-#         - python3 -m pytest --cov=tests/ --cov-report xml:coverag1.xml
+#   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+#     entrypoint: 'venv/bin/python'
+#     args:
+#       - '-c'
+#       - |
+# #         pipenv run pytest \
+#           --cov=mymodule \
+#           --cov=tests \
+#           --cov-report xml:report-coverage.xml \
+# #         - python3 -m pytest --cov=tests/ --cov-report xml:coverag1.xml
 #       - -m pytest --cov=tests/test_my_module.py
 #       - coverage run -m pytest
 #       - coverage xml
