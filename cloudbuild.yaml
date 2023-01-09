@@ -12,7 +12,7 @@ steps:
 
   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
     entrypoint: 'venv/bin/python'
-    args: ['-m', 'pytest' , '--cov=tests','--cov-report=xml','-v']
+    args: ['-m', 'pytest' , '--cov=my_module tests','--cov-report=xml','-v']
     
 
 # Static code Analysis
