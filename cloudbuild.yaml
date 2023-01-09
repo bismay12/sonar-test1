@@ -41,6 +41,10 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
     entrypoint: 'venv/bin/python'
     args: ['-m', 'pytest' , '--cov=tests','-v']
+    
+  - name: 'gcr.io/$PROJECT_ID/python-cloudbuild'
+    entrypoint: 'venv/bin/python'
+    args: ['coverage xml']
 
 # # runs pytest from the virtual environment (with all requirements)
    
